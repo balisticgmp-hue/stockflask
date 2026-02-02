@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Facturación</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #ecf0f1;
+            font-size: 1.1em;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: #7f8c8d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #6c7b7d;
+        }
+        
+        .btn-success {
+            background-color: #27ae60;
+        }
+        
+        .btn-success:hover {
+            background-color: #219653;
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .flex {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .flex-grow {
+            flex-grow: 1;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            margin-bottom: -1px;
+        }
+        
+        .tab.active {
+            background-color: white;
+            border-color: #ddd;
+            border-radius: 5px 5px 0 0;
+            border-bottom: 1px solid white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .producto-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 5px;
+            border-radius: 4px;
+        }
+        
+        .producto-info {
+            flex-grow: 1;
+        }
+        
+        .producto-codigo {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .producto-descripcion {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .total-factura {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #27ae60;
+            text-align: right;
+            margin-top: 20px;
+        }
+        
+        .search-box {
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            width: 100%;
+            font-size: 16px;
+        }
+        
+        .search-input:focus {
+            border-color: #3498db;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .close-modal {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+            
+            table {
+                font-size: 14px;
+            }
+            
+            th, td {
+                padding: 8px;
+            }
+            
+            .btn {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sistema de Facturación</h1>
+            <p class="subtitle">Gestión completa de productos, clientes y facturas</p>
+        </header>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="mostrarTab('importar')">Importar Excel</div>
+            <div class="tab" onclick="mostrarTab('listas-precios')">Listas de Precios</div>
+            <div class="tab" onclick="mostrarTab('clientes')">Clientes</div>
+            <div class="tab" onclick="mostrarTab('productos')">Productos</div>
+            <div class="tab" onclick="mostrarTab('facturacion')">Facturación</div>
+        </div>
+        
+        <!-- Tab: Importar Excel -->
+        <div id="importar" class="tab-content active">
+            <div class="card">
+                <h2>Importar Productos desde Excel</h2>
+                <div class="alert alert-info">
+                    <strong>Importante:</strong> El archivo Excel debe tener las columnas: CODIGO, DETALLE, COSTO, PRECIO_1, PRECIO_2, PRECIO_3, PRECIO_4
+                </div>
+                
+                <div class="form-group">
+                    <label for="excelFile">Seleccionar archivo Excel:</label>
+                    <input type="file" id="excelFile" accept=".xlsx, .xls">
+                </div>
+                
+                <button class="btn btn-success" onclick="importarExcel()">Importar Productos</button>
+                
+                <div id="importResult" class="alert hidden"></div>
+                
+                <div style="margin-top: 20px;">
+                    <h3>Vista previa de la estructura esperada:</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>CODIGO</th>
+                                <th>DETALLE</th>
+                                <th>COSTO</th>
+                                <th>PRECIO_1</th>
+                                <th>PRECIO_2</th>
+                                <th>PRECIO_3</th>
+                                <th>PRECIO_4</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10204</td>
+                                <td>Criollitas x3 x105g</td>
+                                <td>998.67</td>
+                                <td>1098.54</td>
+                                <td>1078.56</td>
+                                <td>1058.59</td>
+                                <td>1038.62</td>
+                            </tr>
+                            <tr>
+                                <td>13783</td>
+                                <td>Mana Vainilla x145g</td>
+                                <td>665.78</td>
+                                <td>732.36</td>
+                                <td>719.04</td>
+                                <td>705.73</td>
+                                <td>692.41</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab: Listas de Precios -->
+        <div id="listas-precios" class="tab-content">
+            <div class="card">
+                <h2>Crear Lista de Precios</h2>
+                
+                <div class="form-group">
+                    <label for="nombreLista">Nombre de la lista:</label>
+                    <input type="text" id="nombreLista" placeholder="Ej: Mayorista 10%">
+                </div>
+                
+                <div class="form-group">
+                    <label for="margenLista">Margen de ganancia:</label>
+                    <select id="margenLista">
+                        <option value="10">10% de ganancia</option>
+                        <option value="8">8% de ganancia</option>
+                        <option value="6">6% de ganancia</option>
+                        <option value="4">4% de ganancia</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="crearListaPrecios()">Crear Lista de Precios</button>
+            </div>
+        </div>
+        
+        <!-- Tab: Clientes -->
+        <div id="clientes" class="tab-content">
+            <div class="card">
+                <h2>Gestión de Clientes</h2>
+                
+                <div class="flex">
+                    <div class="flex-grow">
+                        <input type="text" id="buscarCliente" placeholder="Buscar cliente..." onkeyup="filtrarClientes()">
+                    </div>
+                    <button class="btn" onclick="mostrarModalCliente()">Nuevo Cliente</button>
+                </div>
+                
+                <div id="listaClientes"></div>
+            </div>
+        </div>
+        
+        <!-- Tab: Productos -->
+        <div id="productos" class="tab-content">
+            <div class="card">
+                <h2>Productos Disponibles</h2>
+                
+                <div class="search-box">
+                    <input type="text" id="buscarProducto" class="search-input" placeholder="Buscar por código o descripción..." onkeyup="filtrarProductos()">
+                </div>
+                
+                <div id="listaProductos"></div>
+            </div>
+        </div>
+        
+        <!-- Tab: Facturación -->
+        <div id="facturacion" class="tab-content">
+            <div class="card">
+                <h2>Nueva Factura</h2>
+                
+                <div class="form-group">
+                    <label for="clienteFactura">Cliente:</label>
+                    <select id="clienteFactura" onchange="cargarDatosCliente()">
+                        <option value="">Seleccionar cliente...</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="vendedor">Vendedor:</label>
+                    <input type="text" id="vendedor" value="TITULAR DEL COMERCIO">
+                </div>
+                
+                <div class="flex">
+                    <div class="form-group flex-grow">
+                        <label for="formaEntrega">Forma de Entrega:</label>
+                        <select id="formaEntrega">
+                            <option value="">Seleccionar...</option>
+                            <option value="Retira">Retira en local</option>
+                            <option value="Envío">Envío a domicilio</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group flex-grow">
+                        <label for="condVenta">Condición de Venta:</label>
+                        <select id="condVenta">
+                            <option value="CONTADO">Contado</option>
+                            <option value="CREDITO">Crédito</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Buscar y agregar producto:</label>
+                    <div class="flex">
+                        <input type="text" id="buscarProductoFactura" placeholder="Código del producto" class="flex-grow" onkeyup="buscarProductoRapido(event)">
+                        <button class="btn" onclick="buscarProductoParaFactura()">Buscar</button>
+                    </div>
+                    <div id="resultadoBusquedaProducto"></div>
+                </div>
+                
+                <h3>Productos en la Factura</h3>
+                <table id="tablaProductosFactura">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Descripción</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unit.</th>
+                            <th>Subtotal</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoTablaFactura"></tbody>
+                </table>
+                
+                <div class="total-factura" id="totalFactura">Total: $0.00</div>
+                
+                <div class="flex" style="margin-top: 20px;">
+                    <button class="btn btn-success flex-grow" onclick="crearFactura()" id="btnCrearFactura">Crear Factura</button>
+                    <button class="btn btn-secondary" onclick="limpiarFactura()">Limpiar</button>
+                </div>
+                
+                <div id="resultadoFactura" class="alert hidden"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para nuevo cliente -->
+    <div id="modalCliente" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="cerrarModalCliente()">&times;</span>
+            <h2>Nuevo Cliente</h2>
+            
+            <div class="form-group">
+                <label for="clienteCodigo">Código:</label>
+                <input type="text" id="clienteCodigo">
+            </div>
+            
+            <div class="form-group">
+                <label for="clienteNombre">Nombre/Razón Social:</label>
+                <input type="text" id="clienteNombre" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="clienteDireccion">Dirección:</label>
+                <input type="text" id="clienteDireccion">
+            </div>
+            
+            <div class="form-group">
+                <label for="clienteTelefono">Teléfono:</label>
+                <input type="text" id="clienteTelefono">
+            </div>
+            
+            <div class="form-group">
+                <label for="clienteCUIT">CUIT:</label>
+                <input type="text" id="clienteCUIT">
+            </div>
+            
+            <div class="form-group">
+                <label for="clienteIVA">Condición IVA:</label>
+                <select id="clienteIVA">
+                    <option value="CONSUMIDOR FINAL">Consumidor Final</option>
+                    <option value="RESPONSABLE INSCRIPTO">Responsable Inscripto</option>
+                    <option value="MONOTRIBUTISTA">Monotributista</option>
+                    <option value="EXENTO">Exento</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="clienteEmail">Email:</label>
+                <input type="email" id="clienteEmail">
+            </div>
+            
+            <button class="btn btn-success" onclick="guardarCliente()">Guardar Cliente</button>
+        </div>
+    </div>
+    
+    <script>
+        let productos = [];
+        let clientes = [];
+        let productosFactura = [];
+        let facturaActual = null;
+        
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarClientes();
+            cargarProductos();
+        });
+        
+        function mostrarTab(tabId) {
+            // Ocultar todas las pestañas
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Mostrar la pestaña seleccionada
+            document.querySelector(`[onclick="mostrarTab('${tabId}')"]`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+        
+        function mostrarAlerta(elementId, mensaje, tipo = 'info') {
+            const elemento = document.getElementById(elementId);
+            elemento.innerHTML = mensaje;
+            elemento.className = `alert alert-${tipo}`;
+            elemento.classList.remove('hidden');
+            
+            if (tipo === 'success') {
+                setTimeout(() => {
+                    elemento.classList.add('hidden');
+                }, 5000);
+            }
+        }
+        
+        // Importar Excel
+        function importarExcel() {
+            const fileInput = document.getElementById('excelFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                mostrarAlerta('importResult', 'Seleccione un archivo Excel', 'error');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            fetch('/api/importar-excel', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    mostrarAlerta('importResult', 'Error: ' + data.error, 'error');
+                } else {
+                    mostrarAlerta('importResult', 
+                        `Importación completada: ${data.importados} nuevos, ${data.actualizados} actualizados. Total: ${data.total} productos.`, 
+                        'success');
+                    cargarProductos();
+                }
+            })
+            .catch(error => {
+                mostrarAlerta('importResult', 'Error: ' + error, 'error');
+            });
+        }
+        
+        // Crear lista de precios
+        function crearListaPrecios() {
+            const nombre = document.getElementById('nombreLista').value;
+            const margen = document.getElementById('margenLista').value;
+            
+            if (!nombre) {
+                alert('Ingrese un nombre para la lista de precios');
+                return;
+            }
+            
+            fetch('/api/crear-lista-precios', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nombre, margen })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                } else {
+                    alert(`Lista de precios "${data.nombre}" creada con ${data.margen}% de margen`);
+                    document.getElementById('nombreLista').value = '';
+                }
+            });
+        }
+        
+        // Clientes
+        function cargarClientes() {
+            fetch('/api/clientes')
+                .then(response => response.json())
+                .then(data => {
+                    clientes = data;
+                    mostrarClientes();
+                    
+                    // Llenar select de facturación
+                    const select = document.getElementById('clienteFactura');
+                    select.innerHTML = '<option value="">Seleccionar cliente...</option>';
+                    clientes.forEach(cliente => {
+                        select.innerHTML += `<option value="${cliente.id}">${cliente.codigo} - ${cliente.nombre}</option>`;
+                    });
+                });
+        }
+        
+        function mostrarClientes() {
+            const lista = document.getElementById('listaClientes');
+            let html = '<table><thead><tr><th>Código</th><th>Nombre</th><th>CUIT</th><th>Teléfono</th><th>IVA</th></tr></thead><tbody>';
+            
+            clientes.forEach(cliente => {
+                html += `<tr>
+                    <td>${cliente.codigo}</td>
+                    <td>${cliente.nombre}</td>
+                    <td>${cliente.cuit}</td>
+                    <td>${cliente.telefono}</td>
+                    <td>${cliente.iva_condicion}</td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            lista.innerHTML = html;
+        }
+        
+        function filtrarClientes() {
+            const busqueda = document.getElementById('buscarCliente').value.toLowerCase();
+            const clientesFiltrados = clientes.filter(cliente => 
+                cliente.codigo.toLowerCase().includes(busqueda) ||
+                cliente.nombre.toLowerCase().includes(busqueda) ||
+                cliente.cuit.toLowerCase().includes(busqueda)
+            );
+            
+            const lista = document.getElementById('listaClientes');
+            let html = '<table><thead><tr><th>Código</th><th>Nombre</th><th>CUIT</th><th>Teléfono</th><th>IVA</th></tr></thead><tbody>';
+            
+            clientesFiltrados.forEach(cliente => {
+                html += `<tr>
+                    <td>${cliente.codigo}</td>
+                    <td>${cliente.nombre}</td>
+                    <td>${cliente.cuit}</td>
+                    <td>${cliente.telefono}</td>
+                    <td>${cliente.iva_condicion}</td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            lista.innerHTML = html;
+        }
+        
+        function mostrarModalCliente() {
+            document.getElementById('modalCliente').style.display = 'flex';
+        }
+        
+        function cerrarModalCliente() {
+            document.getElementById('modalCliente').style.display = 'none';
+            limpiarFormularioCliente();
+        }
+        
+        function limpiarFormularioCliente() {
+            document.getElementById('clienteCodigo').value = '';
+            document.getElementById('clienteNombre').value = '';
+            document.getElementById('clienteDireccion').value = '';
+            document.getElementById('clienteTelefono').value = '';
+            document.getElementById('clienteCUIT').value = '';
+            document.getElementById('clienteIVA').value = 'CONSUMIDOR FINAL';
+            document.getElementById('clienteEmail').value = '';
+        }
+        
+        function guardarCliente() {
+            const cliente = {
+                codigo: document.getElementById('clienteCodigo').value,
+                nombre: document.getElementById('clienteNombre').value,
+                direccion: document.getElementById('clienteDireccion').value,
+                telefono: document.getElementById('clienteTelefono').value,
+                cuit: document.getElementById('clienteCUIT').value,
+                iva_condicion: document.getElementById('clienteIVA').value,
+                email: document.getElementById('clienteEmail').value
+            };
+            
+            if (!cliente.nombre) {
+                alert('El nombre del cliente es obligatorio');
+                return;
+            }
+            
+            fetch('/api/crear-cliente', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(cliente)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                } else {
+                    alert('Cliente creado correctamente');
+                    cerrarModalCliente();
+                    cargarClientes();
+                }
+            });
+        }
+        
+        // Productos
+        function cargarProductos() {
+            fetch('/api/productos')
+                .then(response => response.json())
+                .then(data => {
+                    productos = data;
+                    mostrarProductos();
+                });
+        }
+        
+        function mostrarProductos() {
+            const lista = document.getElementById('listaProductos');
+            let html = '<table><thead><tr><th>Código</th><th>Descripción</th><th>Costo</th><th>Precio 1</th><th>Precio 2</th><th>Precio 3</th><th>Precio 4</th></tr></thead><tbody>';
+            
+            productos.forEach(producto => {
+                html += `<tr>
+                    <td>${producto.codigo}</td>
+                    <td>${producto.descripcion}</td>
+                    <td>$${producto.costo.toFixed(2)}</td>
+                    <td>$${producto.precio_1.toFixed(2)}</td>
+                    <td>$${producto.precio_2.toFixed(2)}</td>
+                    <td>$${producto.precio_3.toFixed(2)}</td>
+                    <td>$${producto.precio_4.toFixed(2)}</td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            lista.innerHTML = html;
+        }
+        
+        function filtrarProductos() {
+            const busqueda = document.getElementById('buscarProducto').value.toLowerCase();
+            const productosFiltrados = productos.filter(producto => 
+                producto.codigo.toLowerCase().includes(busqueda) ||
+                producto.descripcion.toLowerCase().includes(busqueda)
+            );
+            
+            const lista = document.getElementById('listaProductos');
+            let html = '<table><thead><tr><th>Código</th><th>Descripción</th><th>Costo</th><th>Precio 1</th><th>Precio 2</th><th>Precio 3</th><th>Precio 4</th></tr></thead><tbody>';
+            
+            productosFiltrados.forEach(producto => {
+                html += `<tr>
+                    <td>${producto.codigo}</td>
+                    <td>${producto.descripcion}</td>
+                    <td>$${producto.costo.toFixed(2)}</td>
+                    <td>$${producto.precio_1.toFixed(2)}</td>
+                    <td>$${producto.precio_2.toFixed(2)}</td>
+                    <td>$${producto.precio_3.toFixed(2)}</td>
+                    <td>$${producto.precio_4.toFixed(2)}</td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            lista.innerHTML = html;
+        }
+        
+        // Facturación
+        function buscarProductoRapido(event) {
+            if (event.key === 'Enter') {
+                buscarProductoParaFactura();
+            }
+        }
+        
+        function buscarProductoParaFactura() {
+            const codigo = document.getElementById('buscarProductoFactura').value.trim();
+            
+            if (!codigo) {
+                mostrarAlerta('resultadoBusquedaProducto', 'Ingrese un código de producto', 'error');
+                return;
+            }
+            
+            fetch(`/api/buscar-producto/${codigo}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        mostrarAlerta('resultadoBusquedaProducto', 'Producto no encontrado', 'error');
+                    } else {
+                        mostrarAlerta('resultadoBusquedaProducto', 
+                            `<strong>${data.codigo} - ${data.descripcion}</strong><br>
+                            Precios: $${data.precio_1.toFixed(2)} | $${data.precio_2.toFixed(2)} | $${data.precio_3.toFixed(2)} | $${data.precio_4.toFixed(2)}<br>
+                            <button class="btn btn-sm" onclick="agregarProductoAFactura(${data.id}, ${data.precio_1})">Agregar (Precio 1)</button>
+                            <button class="btn btn-sm" onclick="agregarProductoAFactura(${data.id}, ${data.precio_2})">Agregar (Precio 2)</button>
+                            <button class="btn btn-sm" onclick="agregarProductoAFactura(${data.id}, ${data.precio_3})">Agregar (Precio 3)</button>
+                            <button class="btn btn-sm" onclick="agregarProductoAFactura(${data.id}, ${data.precio_4})">Agregar (Precio 4)</button>`,
+                            'info');
+                        document.getElementById('buscarProductoFactura').value = '';
+                    }
+                });
+        }
+        
+        function agregarProductoAFactura(productoId, precio) {
+            const producto = productos.find(p => p.id == productoId);
+            
+            if (!producto) {
+                alert('Producto no encontrado');
+                return;
+            }
+            
+            // Verificar si el producto ya está en la factura
+            const index = productosFactura.findIndex(p => p.producto_id == productoId && p.precio == precio);
+            
+            if (index !== -1) {
+                // Incrementar cantidad
+                productosFactura[index].cantidad += 1;
+                productosFactura[index].subtotal = productosFactura[index].cantidad * productosFactura[index].precio;
+            } else {
+                // Agregar nuevo producto
+                productosFactura.push({
+                    producto_id: productoId,
+                    codigo: producto.codigo,
+                    descripcion: producto.descripcion,
+                    cantidad: 1,
+                    precio: precio,
+                    subtotal: precio
+                });
+            }
+            
+            actualizarTablaFactura();
+            document.getElementById('resultadoBusquedaProducto').classList.add('hidden');
+        }
+        
+        function actualizarTablaFactura() {
+            const cuerpo = document.getElementById('cuerpoTablaFactura');
+            cuerpo.innerHTML = '';
+            
+            let total = 0;
+            
+            productosFactura.forEach((producto, index) => {
+                const fila = cuerpo.insertRow();
+                fila.innerHTML = `
+                    <td>${producto.codigo}</td>
+                    <td>${producto.descripcion}</td>
+                    <td><input type="number" value="${producto.cantidad}" min="1" step="1" style="width: 70px;" onchange="actualizarCantidad(${index}, this.value)"></td>
+                    <td>$${producto.precio.toFixed(2)}</td>
+                    <td>$${producto.subtotal.toFixed(2)}</td>
+                    <td><button class="btn btn-danger" onclick="eliminarProductoFactura(${index})">Eliminar</button></td>
+                `;
+                total += producto.subtotal;
+            });
+            
+            document.getElementById('totalFactura').textContent = `Total: $${total.toFixed(2)}`;
+            
+            // Habilitar/deshabilitar botón de crear factura
+            document.getElementById('btnCrearFactura').disabled = productosFactura.length === 0;
+        }
+        
+        function actualizarCantidad(index, nuevaCantidad) {
+            nuevaCantidad = parseFloat(nuevaCantidad);
+            
+            if (isNaN(nuevaCantidad) || nuevaCantidad < 1) {
+                nuevaCantidad = 1;
+            }
+            
+            productosFactura[index].cantidad = nuevaCantidad;
+            productosFactura[index].subtotal = nuevaCantidad * productosFactura[index].precio;
+            actualizarTablaFactura();
+        }
+        
+        function eliminarProductoFactura(index) {
+            productosFactura.splice(index, 1);
+            actualizarTablaFactura();
+        }
+        
+        function cargarDatosCliente() {
+            const clienteId = document.getElementById('clienteFactura').value;
+            const cliente = clientes.find(c => c.id == clienteId);
+            
+            if (cliente) {
+                // Aquí podrías cargar datos adicionales del cliente si fuera necesario
+                console.log('Cliente seleccionado:', cliente);
+            }
+        }
+        
+        function crearFactura() {
+            const clienteId = document.getElementById('clienteFactura').value;
+            const vendedor = document.getElementById('vendedor').value;
+            const formaEntrega = document.getElementById('formaEntrega').value;
+            const condVenta = document.getElementById('condVenta').value;
+            
+            if (!clienteId) {
+                mostrarAlerta('resultadoFactura', 'Seleccione un cliente', 'error');
+                return;
+            }
+            
+            if (productosFactura.length === 0) {
+                mostrarAlerta('resultadoFactura', 'Agregue productos a la factura', 'error');
+                return;
+            }
+            
+            const facturaData = {
+                cliente_id: clienteId,
+                productos: productosFactura,
+                vendedor: vendedor,
+                forma_entrega: formaEntrega,
+                cond_venta: condVenta
+            };
+            
+            fetch('/api/crear-factura', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(facturaData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    mostrarAlerta('resultadoFactura', 'Error: ' + data.error, 'error');
+                } else {
+                    mostrarAlerta('resultadoFactura', 
+                        `Factura ${data.numero} creada correctamente<br>
+                        Total: $${data.total.toFixed(2)}<br>
+                        <a href="/api/factura/${data.factura_id}/pdf" target="_blank" class="btn">Descargar PDF</a>`,
+                        'success');
+                    
+                    facturaActual = data.factura_id;
+                    limpiarFactura();
+                }
+            })
+            .catch(error => {
+                mostrarAlerta('resultadoFactura', 'Error: ' + error, 'error');
+            });
+        }
+        
+        function limpiarFactura() {
+            productosFactura = [];
+            document.getElementById('clienteFactura').value = '';
+            document.getElementById('vendedor').value = 'TITULAR DEL COMERCIO';
+            document.getElementById('formaEntrega').value = '';
+            document.getElementById('condVenta').value = 'CONTADO';
+            document.getElementById('buscarProductoFactura').value = '';
+            document.getElementById('resultadoBusquedaProducto').classList.add('hidden');
+            actualizarTablaFactura();
+        }
+        
+        // Cerrar modal si se hace clic fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalCliente');
+            if (event.target == modal) {
+                cerrarModalCliente();
+            }
+        };
+    </script>
+</body>
+</html>
